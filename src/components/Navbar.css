@@ -10,12 +10,12 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-left: 2vh;
-    margin-top: 94vh;
+    position: fixed;
+    top: 94vh;
+    left: 2vh;
 }
 
 .menu-bars {
-    margin-left: 2rem;
     font-size: 2rem;
     background: none;
 }
@@ -41,7 +41,6 @@
     display: flex;
     justify-content: start;
     align-items: center;
-    padding: 8px 0px 8px 16px;
     list-style: none;
     height: 60px;
 }
@@ -58,7 +57,6 @@
     height: 100%;
     display: flex;
     align-items: center;
-    padding: 0 16px;
     border-radius: 4px;
 }
 
@@ -67,12 +65,12 @@
     color: lightgrey;
 }
 
-.nav-text a:hover {
+.hover a:hover {
     background-color: #1a83ff;
 }
 
-.nav-sub-text a:hover {
-    background: none;
+.nav-text a:hover {
+    color: white;
 }
 
 .nav-menu-items {
@@ -90,4 +88,13 @@
 
 a span {
     margin-left: 16px;
+}
+
+.addJobDescriptor {
+    margin-bottom: 20px;
+    margin-left: 16px;
+    margin-right: 24px;
+    color: white;
+    font-size: 13px;
+    font-weight: bold;
 }
