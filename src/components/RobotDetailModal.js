@@ -2,7 +2,7 @@ import axios from "axios";
 import React, {useEffect, useState} from "react";
 import { Modal, Button, InputGroup, Form } from "react-bootstrap";
 
-const RobotDetailModal = ({robotId, isOpen, setIsOpen}) => {
+const RobotDetailModal = ({robotId, isOpen, setIsOpen, getRobotList}) => {
     const [ip, setIp] = useState("")
     const [port, setPort] = useState("")
     const [user, setUser] = useState("")
@@ -20,6 +20,7 @@ const RobotDetailModal = ({robotId, isOpen, setIsOpen}) => {
                 user: user,
                 password: password
             })
+            getRobotList()
         }
         catch (e) {
             console.log(e)
@@ -29,13 +30,12 @@ const RobotDetailModal = ({robotId, isOpen, setIsOpen}) => {
     const getRobotDetail = async () => {
         try {
             const robotDetail = await axios.get(`http://localhost:8080/api/v1/robot/${robotId}`)
-            console.log(robotDetail.data)
             setIp(robotDetail.data.address.split(":")[0])
             setPort(robotDetail.data.address.split(":")[1])
             setUser(robotDetail.data.user)
             setPassword(robotDetail.data.password)
         } catch (e) {
-
+            console.log(e)
         }
     }
 

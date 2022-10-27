@@ -1,10 +1,13 @@
 import React, {useState, useEffect} from "react"
 import axios from "axios"
 import RobotDetailModal from "../components/RobotDetailModal"
+import { AiOutlinePlus, AiFillDelete } from "react-icons/ai"
+import RobotAddModal from "../components/RobotAddModal"
 
 const Robot = () => {
     const [robotList, setRobotList] = useState([])
-    const [isModalOpen, setIsModalopen] = useState(false)
+    const [isDetailModalOpen, setIsDetailModalopen] = useState(false)
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false)
     const [SelectedRobotId, setSelectedRobotId] = useState(0)
 
     useEffect(() => {
@@ -13,7 +16,7 @@ const Robot = () => {
 
     useEffect(() => {
         getRobotList()
-    }, [isModalOpen])
+    }, [isDetailModalOpen])
 
     const getRobotList = async () => {
         try {
@@ -35,15 +38,22 @@ const Robot = () => {
     }
 
     const onClickRow = (id) => {
-        setIsModalopen(true)
+        setIsDetailModalopen(true)
         setSelectedRobotId(id)
     }
 
     return (
         <div>
-            <h1>
-                로봇리스트
-            </h1>
+            <div className="d-flex ml-2 mr-2 justify-content-between">
+                <span className="h1">
+                    로봇리스트
+                </span>
+                <AiOutlinePlus 
+                    className="h2" 
+                    style={{cursor: "pointer"}}
+                    onClick={() => setIsAddModalOpen(true)}
+                />
+            </div>
             <table className="table">
             <thead>
                 <tr>
@@ -55,21 +65,32 @@ const Robot = () => {
             <tbody>
             {
                 robotList.map((robot, idx) => 
-                    <tr id={`${robot.id}_${idx}`} onClick={() => onClickRow(robot.id)}>
-                        <td>{robot.id}</td>
-                        <td>{robot.address}</td>
-                        <td onClick={() => onClickDelete(robot.id)}>삭제</td>
+                    <tr id={`${robot.id}_${idx}`}>
+                        <td onClick={() => onClickRow(robot.id)} style={{cursor: "pointer"}}>{robot.id}</td>
+                        <td onClick={() => onClickRow(robot.id)} style={{cursor: "pointer"}}>{robot.address}</td>
+                        <td onClick={() => onClickDelete(robot.id)} style={{cursor: "pointer"}}>
+                            <AiFillDelete />
+                        </td>
                     </tr>
                 )
             }
             </tbody>
             </table>
             {
-                isModalOpen && 
+                isDetailModalOpen && 
                 <RobotDetailModal 
                     robotId={SelectedRobotId} 
-                    isOpen={isModalOpen} 
-                    setIsOpen={(e) => setIsModalopen(e)}
+                    isOpen={isDetailModalOpen} 
+                    setIsOpen={(e) => setIsDetailModalopen(e)}
+                    getRobotList={() => getRobotList()}
+                />
+            }
+            {
+                isAddModalOpen &&
+                <RobotAddModal 
+                    isOpen={isAddModalOpen}
+                    setIsOpen={e => setIsAddModalOpen(e)}
+                    getRobotList={() => getRobotList()}
                 />
             }
         </div>
