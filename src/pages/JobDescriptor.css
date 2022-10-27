@@ -31,8 +31,10 @@
     font-weight: bold;
 }
 
-.add-job {
+.add-job{
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+}
+
+.add-job input {
+    margin-right: 20px;
 }
