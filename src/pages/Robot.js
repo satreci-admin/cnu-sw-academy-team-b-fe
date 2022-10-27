@@ -8,7 +8,7 @@ const Robot = () => {
     const [robotList, setRobotList] = useState([])
     const [isDetailModalOpen, setIsDetailModalopen] = useState(false)
     const [isAddModalOpen, setIsAddModalOpen] = useState(false)
-    const [SelectedRobotId, setSelectedRobotId] = useState(0)
+    const [selectedRobotId, setSelectedRobotId] = useState(0)
 
     useEffect(() => {
         getRobotList()
@@ -79,7 +79,7 @@ const Robot = () => {
             {
                 isDetailModalOpen && 
                 <RobotDetailModal 
-                    robotId={SelectedRobotId} 
+                    robotId={selectedRobotId} 
                     isOpen={isDetailModalOpen} 
                     setIsOpen={(e) => setIsDetailModalopen(e)}
                     getRobotList={() => getRobotList()}
