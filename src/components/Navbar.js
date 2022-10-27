@@ -88,14 +88,14 @@ function Navbar() {
               </Link>
             </li>
             <div className="addJobDescriptor">
-              <div class="mb-3">
+              <div className="mb-3">
                 <h4>작업명세서 추가</h4>
-                <label for="jobDescriptorName" class="form-label">
+                <label htmlFor="jobDescriptorName" className="form-label">
                   이름
                 </label>
                 <input
                   type="text"
-                  class="form-control"
+                  className="form-control"
                   id="jobDescriptorName"
                   value={jobDescriptorName}
                   onChange={handleJobDescriptorNameInputChanged}
