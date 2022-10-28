@@ -17,8 +17,8 @@ function JobDescriptor({ match }) {
     axios.get("http://localhost:8080/api/v1/jobdescriptor/" + id).then((v) => {
       setJobDescriptor(v.data);
       axios
-        .get("http://localhost:8080/api/v1/robots")
-        .then((v) => setRobots(v.data));
+          .get("http://localhost:8080/api/v1/robots")
+          .then((v) => setRobots(v.data));
     });
   }, [id]);
 
@@ -31,6 +31,9 @@ function JobDescriptor({ match }) {
   // 실행 스케줄
   const [isRepeat, setIsRepeat] = useState(true);
   const [isReservation, setIsReservation] = useState(true);
+  const [changedExcutedDateTime, setchangedExcutedDateTime] = useState(
+      jobDescriptor.executedDateTime
+  );
   const handleIsRepeatClick = (e) => {
     setIsRepeat(!isRepeat);
   };
@@ -41,6 +44,19 @@ function JobDescriptor({ match }) {
       setIsRepeat(false);
     }
   };
+  const handlechangedExcutedDateTime = (e) => {
+    setchangedExcutedDateTime(e.target.value);
+  };
+
+  // 로봇
+  const [changedRobotId, setChangedRobotId] = useState(jobDescriptor.robotId);
+  const handleChangedRobotId = (e) => {
+    setChangedRobotId(e.target.value);
+  };
+  useEffect(() => {
+    setchangedExcutedDateTime(jobDescriptor.executedDateTime);
+    setChangedRobotId(jobDescriptor.robotId);
+  }, [jobDescriptor.executedDateTime]);
 
   // 작업
   const [command, setCommand] = useState("");
@@ -124,85 +140,113 @@ function JobDescriptor({ match }) {
                 ></input>
               )}
             </div>
-            <div className="mb-3">
-              <div className="form-check form-switch">
-                <label className="form-check-label" htmlFor="isRepeat">
-                  반복 실행 여부
+          </div>
+          <div className="cards">
+            <div className="card">
+              <h3>실행 스케줄 설정</h3>
+              <div className="mb-3">
+                <label className="form-check-label" htmlFor="isReservation">
+                  실행예약유무
                 </label>
-                {jobDescriptor.isRepeat ? (
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    id="isRepeat"
-                    checked={isRepeat}
-                    onClick={handleIsRepeatClick}
-                  ></input>
+                {jobDescriptor.executedDateTime != null ? (
+                    <input
+                        className="form-check-input"
+                        type="checkbox"
+                        id="isReservation"
+                        checked={isReservation}
+                        onClick={handleIsReservationClick}
+                    ></input>
                 ) : (
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    id="isRepeat"
-                    onClick={handleIsRepeatClick}
-                  ></input>
+                    <input
+                        className="form-check-input"
+                        type="checkbox"
+                        id="isReservation"
+                        onClick={handleIsReservationClick}
+                    ></input>
+                )}
+              </div>
+              <div className="mb-3">
+                <div className="form-check form-switch">
+                  <label className="form-check-label" htmlFor="isRepeat">
+                    반복 실행 여부
+                  </label>
+                  {jobDescriptor.isRepeat ? (
+                      <input
+                          className="form-check-input"
+                          type="checkbox"
+                          id="isRepeat"
+                          checked={isRepeat}
+                          onClick={handleIsRepeatClick}
+                      ></input>
+                  ) : (
+                      <input
+                          className="form-check-input"
+                          type="checkbox"
+                          id="isRepeat"
+                          onClick={handleIsRepeatClick}
+                      ></input>
+                  )}
+                </div>
+              </div>
+              <div className="mb-3">
+                <label htmlFor="executedDateTime" className="form-label">
+                  실행될 날짜와 시간
+                </label>
+                {jobDescriptor.executedDateTime != null ? (
+                    <input
+                        id="executedDateTime"
+                        className="form-control"
+                        type="datetime-local"
+                        name="executedDateTime"
+                        value={changedExcutedDateTime}
+                        onChange={handlechangedExcutedDateTime}
+                    ></input>
+                ) : (
+                    <input
+                        id="executedDateTime2"
+                        className="form-control"
+                        type="datetime-local"
+                        name="executedDateTime2"
+                        value={null}
+                        onChange={handlechangedExcutedDateTime}
+                    ></input>
                 )}
               </div>
             </div>
-            <div className="mb-3">
-              <label htmlFor="executedDateTime" className="form-label">
-                실행될 날짜와 시간
-              </label>
-              {jobDescriptor.executedDateTime != null ? (
-                <input
-                  id="executedDateTime"
-                  className="form-control"
-                  type="datetime-local"
-                  name="executedDateTime"
-                  value={jobDescriptor.executedDateTime}
-                ></input>
-              ) : (
-                <input
-                  id="executedDateTime2"
-                  className="form-control"
-                  type="datetime-local"
-                  name="executedDateTime2"
-                  value=""
-                ></input>
-              )}
+            <div className="card">
+              <h3>로봇 설정</h3>
+              <select
+                  id="robotAddress"
+                  className="form-select"
+                  value={changedRobotId}
+                  onChange={handleChangedRobotId}
+              >
+                {robots.map((robot, index) => {
+                  return (
+                      <option key={index} value={robot.id}>
+                        {robot.id}
+                      </option>
+                  );
+                })}
+              </select>
             </div>
-          </div>
-          <div className="card">
-            <h3>로봇 설정</h3>
-            <select
-              id="robotAddress"
-              className="form-select"
-              value={jobDescriptor.robotId}
-            >
-              {robots.map((robot, index) => {
-                return (
-                  <option key={index} value={robot.id}>
-                    {robot.id}
-                  </option>
-                );
-              })}
-            </select>
-          </div>
-          <div className="card">
-            <h3>작업 설정</h3>
-            <div className="add-job">
-              <input
-                type="text"
-                placeholder="Command"
-                onChange={handleCommandInputChanged}
-              ></input>
-              <input
-                type="text"
-                placeholder="Parameter"
-                onChange={handleParameterInputChanged}
-              ></input>
-              <Button onClick={handleAddJobBtn}>추가</Button>
-            </div>
-            <table className="table">
-              <thead>
+            <div className="card">
+              <h3>작업 설정</h3>
+              <div className="add-job">
+                <input
+                    type="text"
+                    placeholder="Command"
+                    onChange={handleCommandInputChanged}
+                ></input>
+                <input
+                    type="text"
+                    placeholder="Parameter"
+                    onChange={handleParameterInputChanged}
+                ></input>
+                <Button onClick={handleAddJobBtn}>추가</Button>
+              </div>
+              <table className="table">
+                <thead>
                 <tr>
                   <th className="col-sm-1" scope="col">
                     Command
@@ -211,25 +255,25 @@ function JobDescriptor({ match }) {
                     Parameter
                   </th>
                 </tr>
-              </thead>
-              <tbody>
+                </thead>
+                <tbody>
                 {jobs.map((job, index) => {
                   return (
-                    <tr>
-                      <td>{job.command}</td>
-                      <td>{job.parameter}</td>
-                    </tr>
+                      <tr>
+                        <td>{job.command}</td>
+                        <td>{job.parameter}</td>
+                      </tr>
                   );
                 })}
-              </tbody>
-            </table>
-          </div>
-          <div className="card">
-            <h3>실행 로그</h3>
+                </tbody>
+              </table>
+            </div>
+            <div className="card">
+              <h3>실행 로그</h3>
+            </div>
           </div>
         </div>
-      </div>
-    </>
+      </>
   );
 }
 
