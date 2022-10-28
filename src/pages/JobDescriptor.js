@@ -6,17 +6,13 @@ import { Button } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 function JobDescriptor({ match }) {
+  // 작업명세서의 id
   const { id } = useParams();
 
+  // 작업명세서 ,로봇, 작업 정보
   const [jobDescriptor, setJobDescriptor] = useState({});
   const [robots, setRobots] = useState([]);
   const [jobs, setJobs] = useState([]);
-
-  const [command, setCommand] = useState("");
-  const [parameter, setParameter] = useState("");
-  const handleCommandInputChanged = (e) => setCommand(e.target.value);
-  const handleParameterInputChanged = (e) => setParameter(e.target.value);
-
   useEffect(() => {
     axios.get("http://localhost:8080/api/v1/jobdescriptor/" + id).then((v) => {
       setJobDescriptor(v.data);
@@ -32,6 +28,43 @@ function JobDescriptor({ match }) {
     });
   }, [id]);
 
+  // 실행 스케줄
+  const [isRepeat, setIsRepeat] = useState(true);
+  const [isReservation, setIsReservation] = useState(true);
+  const [changedExcutedDateTime, setchangedExcutedDateTime] = useState(
+      jobDescriptor.executedDateTime
+  );
+  const handleIsRepeatClick = (e) => {
+    setIsRepeat(!isRepeat);
+  };
+  const handleIsReservationClick = (e) => {
+    setIsReservation(!isReservation);
+    if (isReservation) {
+      setJobDescriptor({ ...jobDescriptor, executedDateTime: "" });
+      setIsRepeat(false);
+    }
+  };
+  const handlechangedExcutedDateTime = (e) => {
+    setchangedExcutedDateTime(e.target.value);
+  };
+
+  // 로봇
+  const [changedRobotId, setChangedRobotId] = useState(jobDescriptor.robotId);
+  const handleChangedRobotId = (e) => {
+    setChangedRobotId(e.target.value);
+  };
+  useEffect(() => {
+    setchangedExcutedDateTime(jobDescriptor.executedDateTime);
+    setChangedRobotId(jobDescriptor.robotId);
+  }, [jobDescriptor.executedDateTime]);
+
+  // 작업
+  const [command, setCommand] = useState("");
+  const [parameter, setParameter] = useState("");
+  const handleCommandInputChanged = (e) => setCommand(e.target.value);
+  const handleParameterInputChanged = (e) => setParameter(e.target.value);
+
+  // CRUD
   const handleAddJobBtn = () => {
     axios
         .post("http://localhost:8080/job", {
@@ -56,19 +89,6 @@ function JobDescriptor({ match }) {
         parameter: parameter,
       },
     ]);
-  };
-
-  const [isRepeat, setIsRepeat] = useState(true);
-  const [isReservation, setIsReservation] = useState(true);
-  const handleIsRepeatClick = (e) => {
-    setIsRepeat(!isRepeat);
-  };
-  const handleIsReservationClick = (e) => {
-    setIsReservation(!isReservation);
-    if (isReservation) {
-      setJobDescriptor({ ...jobDescriptor, executedDateTime: "" });
-      setIsRepeat(false);
-    }
   };
 
   return (
@@ -139,7 +159,8 @@ function JobDescriptor({ match }) {
                         className="form-control"
                         type="datetime-local"
                         name="executedDateTime"
-                        value={jobDescriptor.executedDateTime}
+                        value={changedExcutedDateTime}
+                        onChange={handlechangedExcutedDateTime}
                     ></input>
                 ) : (
                     <input
@@ -147,7 +168,8 @@ function JobDescriptor({ match }) {
                         className="form-control"
                         type="datetime-local"
                         name="executedDateTime2"
-                        value=""
+                        value={null}
+                        onChange={handlechangedExcutedDateTime}
                     ></input>
                 )}
               </div>
@@ -157,7 +179,8 @@ function JobDescriptor({ match }) {
               <select
                   id="robotAddress"
                   className="form-select"
-                  value={jobDescriptor.robotId}
+                  value={changedRobotId}
+                  onChange={handleChangedRobotId}
               >
                 {robots.map((robot, index) => {
                   return (
