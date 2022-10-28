@@ -118,7 +118,12 @@ function Navbar() {
                   key={index}
                   onClick={showSidebar}
                 >
-                  <Link to={"/jobDescriptor/" + jobDescriptor.id}>
+                  <Link
+                    to={"/jobDescriptor/" + jobDescriptor.id}
+                    onClick={() =>
+                      setTimeout(() => window.location.reload(), 0.01)
+                    }
+                  >
                     <span>{jobDescriptor.name}</span>
                   </Link>
                 </li>
