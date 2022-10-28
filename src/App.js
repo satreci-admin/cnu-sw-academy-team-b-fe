@@ -8,9 +8,10 @@ function App() {
   return (
     <>
       <Router>
+        <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/robot" element={<Robot />}/>
+          <Route path="/robot" element={<Robot />} />
           <Route path="/jobDescriptor/:id" element={<JobDescriptor />} />
         </Routes>
       </Router>
