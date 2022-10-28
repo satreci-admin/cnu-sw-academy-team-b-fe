@@ -65,23 +65,35 @@ function JobDescriptor({ match }) {
   const handleParameterInputChanged = (e) => setParameter(e.target.value);
 
   // CRUD
+  const handleDeleteJobDescriptor = () => {
+    axios.delete("http://localhost:8080/api/v1/jobdescriptor/" + id).then(
+      (v) => {
+        alert("작업이 삭제되었습니다.");
+        window.location.href = "http://localhost:3000";
+      },
+      (e) => {
+        alert("서버 장애가 발생했습니다.");
+        console.error(e);
+      }
+    );
+  };
   const handleAddJobBtn = () => {
     axios
-        .post("http://localhost:8080/job", {
-          command: command,
-          parameter: parameter,
-          activation: false,
-          jobDescriptionId: id,
-        })
-        .then(
-            (v) => {
-              alert("작업이 추가되었습니다.");
-            },
-            (e) => {
-              alert("서버 장애가 발생했습니다.");
-              console.error(e);
-            }
-        );
+      .post("http://localhost:8080/job", {
+        command: command,
+        parameter: parameter,
+        activation: false,
+        jobDescriptionId: id,
+      })
+      .then(
+        (v) => {
+          alert("작업이 추가되었습니다.");
+        },
+        (e) => {
+          alert("서버 장애가 발생했습니다.");
+          console.error(e);
+        }
+      );
     setJobs([
       ...jobs,
       {
@@ -92,14 +104,41 @@ function JobDescriptor({ match }) {
   };
 
   return (
-      <>
-        <div>
-          <div className="topbar">
-            <p>{jobDescriptor.name}</p>
-            <div>
-              <Button>저장</Button>
-              <Button variant="danger">삭제</Button>
-              <Button variant="light">즉시 실행</Button>
+    <>
+      <div>
+        <div className="topbar">
+          <p>{jobDescriptor.name}</p>
+          <div>
+            <Button variant="warning">수정</Button>
+            <Button variant="danger" onClick={handleDeleteJobDescriptor}>
+              삭제
+            </Button>
+            <Button variant="light">즉시 실행</Button>
+          </div>
+        </div>
+        <div className="cards">
+          <div className="card">
+            <h3>실행 스케줄 설정</h3>
+            <div className="mb-3">
+              <label className="form-check-label" htmlFor="isReservation">
+                실행예약유무
+              </label>
+              {jobDescriptor.executedDateTime != null ? (
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  id="isReservation"
+                  checked={isReservation}
+                  onClick={handleIsReservationClick}
+                ></input>
+              ) : (
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  id="isReservation"
+                  onClick={handleIsReservationClick}
+                ></input>
+              )}
             </div>
           </div>
           <div className="cards">
