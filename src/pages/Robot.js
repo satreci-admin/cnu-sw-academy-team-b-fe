@@ -31,9 +31,12 @@ const Robot = () => {
     const onClickDelete = async (id) => {
         try {
             await axios.delete(`http://localhost:8080/api/v1/robot/${id}`)
+        
             setRobotList(robotList.filter(v => v.id !== id))
         } catch (e) {
-            console.log(e)
+            if(e.response.status === 403) {
+                alert("작업명세서가 존재합니다. 확인해주세요")
+            }
         }
     }
 
@@ -43,8 +46,8 @@ const Robot = () => {
     }
 
     return (
-        <div>
-            <div className="d-flex ml-2 mr-2 justify-content-between">
+        <div className="m-2">
+            <div className="d-flex justify-content-between">
                 <span className="h1">
                     로봇리스트
                 </span>
