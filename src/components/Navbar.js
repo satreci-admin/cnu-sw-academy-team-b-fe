@@ -29,6 +29,7 @@ function Navbar() {
     setJobDescriptorName(e.target.value);
 
   const addJobDescriptorBtn = () => {
+    let jobDescriptionId;
     if (jobDescriptorName === "") {
       alert("작업명세서 이름을 입력해주세요.");
     } else {
@@ -42,9 +43,12 @@ function Navbar() {
             alert("작업명세서가 생성되었습니다.");
             axios
               .get("http://localhost:8080/api/v1/jobdescriptors")
-              .then((v) => setJobDescriptors(v.data));
-            showSidebar();
-            navigate("/jobDescriptor/" + (jobDescriptors.length + 1));
+              .then((v) => {
+                setJobDescriptors(v.data);
+                console.log(v.data)
+                showSidebar();
+                navigate("/jobDescriptor/" + v.data[0].id);
+              });
           },
           (e) => {
             alert("서버 장애가 발생했습니다.");
