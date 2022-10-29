@@ -42,21 +42,14 @@ function JobDescriptor({ match }) {
   };
 
   // 실행 스케줄
-  const [isRepeat, setIsRepeat] = useState(jobDescriptor.isRepeat);
-  const [isReservation, setIsReservation] = useState(true);
+  const [isRepeat, setIsRepeat] = useState(false);
   const [changedExcutedDateTime, setchangedExcutedDateTime] = useState(
     jobDescriptor.executedDateTime
   );
   const handleIsRepeatClick = (e) => {
     setIsRepeat(!isRepeat);
   };
-  const handleIsReservationClick = (e) => {
-    setIsReservation(!isReservation);
-    if (isReservation) {
-      setJobDescriptor({ ...jobDescriptor, executedDateTime: "" });
-      setIsRepeat(false);
-    }
-  };
+
   const handlechangedExcutedDateTime = (e) => {
     setchangedExcutedDateTime(e.target.value);
   };
@@ -125,7 +118,7 @@ function JobDescriptor({ match }) {
   };
 
   const handleUpdateJobDescriptor = () => {
-    if (changedRobotId === null) {
+    if (changedRobotId === null || changedRobotId == "") {
       alert("로봇을 반드시 선택해주세요.");
     } else {
       axios
@@ -157,22 +150,20 @@ function JobDescriptor({ match }) {
   };
   // 작업명세서 실행
   const handleExecJobDescriptor = () => {
-    if(changedRobotId === null || changedRobotId === "") {
-      alert("작업명세서에 로봇이 할당되지 않았습니다")
-      return
+    if (changedRobotId === null || changedRobotId === "") {
+      alert("작업명세서에 로봇이 할당되지 않았습니다");
+      return;
     }
-    axios
-      .get("http://localhost:8080/api/v1/exec/jobdescriptor/" + id)
-      .then(
-        (v) => {
-          setLog(v.data);
-        },
-        (e) => {
-          if(e.response.status === 403) {
-            alert("작업명세서에 로봇이 할당되지 않았습니다")
-          }
+    axios.get("http://localhost:8080/api/v1/exec/jobdescriptor/" + id).then(
+      (v) => {
+        setLog(v.data);
+      },
+      (e) => {
+        if (e.response.status === 403) {
+          alert("작업명세서에 로봇이 할당되지 않았습니다");
         }
-      )
+      }
+    );
   };
 
   return (
@@ -199,27 +190,6 @@ function JobDescriptor({ match }) {
         <div className="cards">
           <div className="card">
             <h3>실행 스케줄 설정</h3>
-            <div className="mb-3">
-              <label className="form-check-label" htmlFor="isReservation">
-                실행예약유무
-              </label>
-              {jobDescriptor.executedDateTime != null ? (
-                <input
-                  className="form-check-input"
-                  type="checkbox"
-                  id="isReservation"
-                  checked={isReservation}
-                  onClick={handleIsReservationClick}
-                ></input>
-              ) : (
-                <input
-                  className="form-check-input"
-                  type="checkbox"
-                  id="isReservation"
-                  onClick={handleIsReservationClick}
-                ></input>
-              )}
-            </div>
             <div className="mb-3">
               <div className="form-check form-switch">
                 <label className="form-check-label" htmlFor="isRepeat">
@@ -252,6 +222,7 @@ function JobDescriptor({ match }) {
                   id="executedDateTime"
                   className="form-control"
                   type="datetime-local"
+                  step="1"
                   name="executedDateTime"
                   value={changedExcutedDateTime}
                   onChange={handlechangedExcutedDateTime}
@@ -261,6 +232,7 @@ function JobDescriptor({ match }) {
                   id="executedDateTime2"
                   className="form-control"
                   type="datetime-local"
+                  step="1"
                   name="executedDateTime2"
                   value={null}
                   onChange={handlechangedExcutedDateTime}
@@ -334,7 +306,7 @@ function JobDescriptor({ match }) {
             <h3>실행 로그</h3>
             {log.logStatus === "ETC" ? (
               <textarea
-                class="form-control"
+                className="form-control"
                 style={{ color: "grey" }}
                 value={log.message}
                 rows="6"
@@ -342,7 +314,7 @@ function JobDescriptor({ match }) {
               ></textarea>
             ) : log.logStatus === "INFO" ? (
               <textarea
-                class="form-control"
+                className="form-control"
                 style={{ color: "blue" }}
                 value={log.message}
                 rows="6"
@@ -350,7 +322,7 @@ function JobDescriptor({ match }) {
               ></textarea>
             ) : (
               <textarea
-                class="form-control"
+                className="form-control"
                 style={{ color: "red" }}
                 value={log.message}
                 rows="6"
