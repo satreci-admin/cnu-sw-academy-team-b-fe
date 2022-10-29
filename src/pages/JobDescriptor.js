@@ -75,11 +75,17 @@ function JobDescriptor({ match }) {
   const handleCommandInputChanged = (e) => setCommand(e.target.value);
   const handleParameterInputChanged = (e) => setParameter(e.target.value);
 
+  // 로그
+  const [log, setLog] = useState({
+    logStatus: "ETC",
+    message: "작업명세서를 실행해주세요.",
+  });
+
   // CRUD
   const handleDeleteJobDescriptor = () => {
     axios.delete("http://localhost:8080/api/v1/jobdescriptor/" + id).then(
       (v) => {
-        alert("작업이 삭제되었습니다.");
+        alert("작업명세서가 삭제되었습니다.");
         window.location.href = "http://localhost:3000";
       },
       (e) => {
@@ -142,6 +148,14 @@ function JobDescriptor({ match }) {
       console.log(e)
     }
   }
+  // 작업명세서 실행
+  const handleExecJobDescriptor = () => {
+    axios
+      .get("http://localhost:8080/api/v1/exec/jobdescriptor/" + id)
+      .then((v) => {
+        setLog(v.data);
+      });
+  };
 
   return (
     <>
@@ -153,7 +167,9 @@ function JobDescriptor({ match }) {
             <Button variant="danger" onClick={handleDeleteJobDescriptor}>
               삭제
             </Button>
-            <Button variant="light">즉시 실행</Button>
+            <Button variant="light" onClick={handleExecJobDescriptor}>
+              즉시 실행
+            </Button>
           </div>
         </div>
         <div className="cards">
@@ -274,7 +290,7 @@ function JobDescriptor({ match }) {
               <tbody>
                 {jobs.map((job, index) => {
                   return (
-                    <tr>
+                    <tr key={index}>
                       <td>{job.command}</td>
                       <td>{job.parameter}</td>
                       <td onClick={() => onClickDelete(job.id)} style={{cursor: "pointer"}}>
@@ -288,6 +304,31 @@ function JobDescriptor({ match }) {
           </div>
           <div className="card">
             <h3>실행 로그</h3>
+            {log.logStatus === "ETC" ? (
+              <textarea
+                class="form-control"
+                style={{ color: "grey" }}
+                value={log.message}
+                rows="6"
+                disabled
+              ></textarea>
+            ) : log.logStatus === "INFO" ? (
+              <textarea
+                class="form-control"
+                style={{ color: "blue" }}
+                value={log.message}
+                rows="6"
+                disabled
+              ></textarea>
+            ) : (
+              <textarea
+                class="form-control"
+                style={{ color: "red" }}
+                value={log.message}
+                rows="6"
+                disabled
+              ></textarea>
+            )}
           </div>
         </div>
       </div>
