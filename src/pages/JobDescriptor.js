@@ -125,22 +125,26 @@ function JobDescriptor({ match }) {
   };
 
   const handleUpdateJobDescriptor = () => {
-    axios
-      .put("http://localhost:8080/api/v1/jobdescriptor/" + id, {
-        name: jobDescriptorName,
-        robotId: changedRobotId,
-        isRepeat: !isRepeat,
-        executedDatetime: changedExcutedDateTime,
-      })
-      .then(
-        (v) => {
-          alert("작업이 수정되었습니다.");
-        },
-        (e) => {
-          alert("서버 장애가 발생했습니다.");
-          console.error(e);
-        }
-      );
+    if (changedRobotId === null) {
+      alert("로봇을 반드시 선택해주세요.");
+    } else {
+      axios
+        .put("http://localhost:8080/api/v1/jobdescriptor/" + id, {
+          name: jobDescriptorName,
+          robotId: changedRobotId,
+          isRepeat: !isRepeat,
+          executedDatetime: changedExcutedDateTime,
+        })
+        .then(
+          (v) => {
+            alert("작업이 수정되었습니다.");
+          },
+          (e) => {
+            alert("서버 장애가 발생했습니다.");
+            console.error(e);
+          }
+        );
+    }
   };
 
   const onClickDelete = async (id) => {
@@ -261,6 +265,7 @@ function JobDescriptor({ match }) {
               value={changedRobotId}
               onChange={handleChangedRobotId}
             >
+              <option value="">로봇을 선택해주세요.</option>
               {robots.map((robot, index) => {
                 return (
                   <option key={index} value={robot.id}>
