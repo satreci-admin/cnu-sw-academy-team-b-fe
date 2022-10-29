@@ -234,7 +234,7 @@ function JobDescriptor({ match }) {
               <tbody>
                 {jobs.map((job, index) => {
                   return (
-                    <tr>
+                    <tr key={index}>
                       <td>{job.command}</td>
                       <td>{job.parameter}</td>
                     </tr>
