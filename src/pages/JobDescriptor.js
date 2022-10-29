@@ -165,6 +165,13 @@ function JobDescriptor({ match }) {
       }
     );
   };
+  
+  const handleResetLog = () => {
+    setLog({
+      logStatus: "ETC",
+      message: "작업명세서를 실행해주세요.",
+    })
+  }
 
   return (
     <>
@@ -303,7 +310,12 @@ function JobDescriptor({ match }) {
             </table>
           </div>
           <div className="card">
-            <h3>실행 로그</h3>
+            <div>
+              <h3>실행 로그</h3>
+              <Button className="btn-sm mb-1" onClick={() => handleResetLog()}>
+                  초기화
+              </Button>
+            </div>
             {log.logStatus === "ETC" ? (
               <textarea
                 className="form-control"
