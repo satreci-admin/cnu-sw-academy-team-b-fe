@@ -4,6 +4,7 @@ import axios from "axios";
 import "./JobDescriptor.css";
 import { Button } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
+import {AiFillDelete} from "react-icons/ai";
 
 function JobDescriptor({ match }) {
   // 작업명세서의 id
@@ -13,6 +14,8 @@ function JobDescriptor({ match }) {
   const [jobDescriptor, setJobDescriptor] = useState({});
   const [robots, setRobots] = useState([]);
   const [jobs, setJobs] = useState([]);
+  const [jobDescriptorName, setJobDescriptorName] = useState(jobDescriptor.name);
+
   useEffect(() => {
     axios.get("http://localhost:8080/api/v1/jobdescriptor/" + id).then((v) => {
       setJobDescriptor(v.data);
@@ -28,8 +31,16 @@ function JobDescriptor({ match }) {
     });
   }, [id]);
 
+  useEffect(() => {
+    setJobDescriptorName(jobDescriptor.name);
+  }, [jobDescriptor.name]);
+
+  const handleJobDescriptorName = (e) => {
+    setJobDescriptorName(e.target.value);
+  };
+
   // 실행 스케줄
-  const [isRepeat, setIsRepeat] = useState(true);
+  const [isRepeat, setIsRepeat] = useState(jobDescriptor.isRepeat);
   const [isReservation, setIsReservation] = useState(true);
   const [changedExcutedDateTime, setchangedExcutedDateTime] = useState(
     jobDescriptor.executedDateTime
@@ -85,30 +96,58 @@ function JobDescriptor({ match }) {
   };
   const handleAddJobBtn = () => {
     axios
-      .post("http://localhost:8080/job", {
-        command: command,
-        parameter: parameter,
-        activation: false,
-        jobDescriptionId: id,
-      })
-      .then(
-        (v) => {
-          alert("작업이 추가되었습니다.");
-        },
-        (e) => {
-          alert("서버 장애가 발생했습니다.");
-          console.error(e);
-        }
-      );
-    setJobs([
-      ...jobs,
-      {
-        command: command,
-        parameter: parameter,
-      },
-    ]);
+        .post("http://localhost:8080/job", {
+          command: command,
+          parameter: parameter,
+          activation: false,
+          jobDescriptionId: id,
+        })
+        .then(
+            (v) => {
+              alert("작업이 추가되었습니다.");
+              setJobs([
+                ...jobs,
+                {
+                  id: v.data,
+                  command: command,
+                  parameter: parameter,
+                },
+              ]);
+            },
+            (e) => {
+              alert("서버 장애가 발생했습니다.");
+              console.error(e);
+            }
+        );
   };
 
+  const handleUpdateJobDescriptor = () => {
+    axios
+        .put("http://localhost:8080/api/v1/jobdescriptor/" + id, {
+          name: jobDescriptorName,
+          robotId: changedRobotId,
+          isRepeat: !isRepeat,
+          executedDatetime: changedExcutedDateTime,
+        })
+        .then(
+            (v) => {
+              alert("작업이 수정되었습니다.");
+            },
+            (e) => {
+              alert("서버 장애가 발생했습니다.");
+              console.error(e);
+            }
+        );
+  }
+
+  const onClickDelete = async (id) => {
+    try {
+      await axios.delete(`http://localhost:8080/job/` + id)
+      setJobs(jobs.filter(v => v.id !== id))
+    } catch (e) {
+      console.log(e)
+    }
+  }
   // 작업명세서 실행
   const handleExecJobDescriptor = () => {
     axios
@@ -122,9 +161,9 @@ function JobDescriptor({ match }) {
     <>
       <div>
         <div className="topbar">
-          <p>{jobDescriptor.name}</p>
+          <input type="text" value={jobDescriptorName} onChange={handleJobDescriptorName}></input>
           <div>
-            <Button variant="warning">수정</Button>
+            <Button variant="warning"onClick={handleUpdateJobDescriptor}>수정</Button>
             <Button variant="danger" onClick={handleDeleteJobDescriptor}>
               삭제
             </Button>
@@ -254,6 +293,9 @@ function JobDescriptor({ match }) {
                     <tr key={index}>
                       <td>{job.command}</td>
                       <td>{job.parameter}</td>
+                      <td onClick={() => onClickDelete(job.id)} style={{cursor: "pointer"}}>
+                        <AiFillDelete />
+                      </td>
                     </tr>
                   );
                 })}
