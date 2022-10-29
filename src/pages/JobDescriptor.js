@@ -157,6 +157,10 @@ function JobDescriptor({ match }) {
   };
   // 작업명세서 실행
   const handleExecJobDescriptor = () => {
+    if(changedRobotId === null || changedRobotId === "") {
+      alert("작업명세서에 로봇이 할당되지 않았습니다")
+      return
+    }
     axios
       .get("http://localhost:8080/api/v1/exec/jobdescriptor/" + id)
       .then(
