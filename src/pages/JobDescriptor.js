@@ -178,6 +178,15 @@ function JobDescriptor({ match }) {
       <div>
         <div className="topbar">
           <input
+            style={{
+              backgroundColor: "#060b26",
+              color: "white",
+              border: "none",
+              borderRight: "0px",
+              borderTop: "0px",
+              borderLeft: "0px",
+              borderBottom: "0px",
+            }}
             type="text"
             value={jobDescriptorName}
             onChange={handleJobDescriptorName}
