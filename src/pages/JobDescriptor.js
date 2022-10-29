@@ -125,7 +125,7 @@ function JobDescriptor({ match }) {
         .put("http://localhost:8080/api/v1/jobdescriptor/" + id, {
           name: jobDescriptorName,
           robotId: changedRobotId,
-          isRepeat: !isRepeat,
+          isRepeat: isRepeat,
           executedDatetime: changedExcutedDateTime,
         })
         .then(
