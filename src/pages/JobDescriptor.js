@@ -172,7 +172,8 @@ function JobDescriptor({ match }) {
             alert("작업명세서에 로봇이 할당되지 않았습니다")
           }
         }
-      )
+      }
+    );
   };
 
   return (
@@ -252,6 +253,7 @@ function JobDescriptor({ match }) {
                   id="executedDateTime"
                   className="form-control"
                   type="datetime-local"
+                  step="1"
                   name="executedDateTime"
                   value={changedExcutedDateTime}
                   onChange={handlechangedExcutedDateTime}
@@ -261,6 +263,7 @@ function JobDescriptor({ match }) {
                   id="executedDateTime2"
                   className="form-control"
                   type="datetime-local"
+                  step="1"
                   name="executedDateTime2"
                   value={null}
                   onChange={handlechangedExcutedDateTime}
